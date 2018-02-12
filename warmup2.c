@@ -13,13 +13,26 @@
  int num;
  char* tsfile;
 
-pthread_mutex_t lock=PTHREAD_MUTEX_INITIALIZER;
+ My402List Q1;
+ My402List Q2;
+ My402List bucket;
+ pthread_mutex_t lock=PTHREAD_MUTEX_INITIALIZER;
+ 
+ pthread_t packet_thread;
+ pthread_t token_thread;
+ pthread_t server1_thread;
+ pthread_t server2_thread;
+
 void printParam(){
 	 printf("Emulation Parameters:\n");
 	 printf("number to arrive = %d\n",num);
 	 printf("lambda = %d\n",lambda);
 	 printf("mu = %f\n",mu);
-
+	 printf("r = %d\n",r);
+	 printf("B = %d\n",B);
+	 printf("P = %d\n",P);
+	 printf("num = %d\n",num);
+     printf("%s\n",tsfile);
 }
 void makeChoice(int argc,char* argv[]){
      if(argc==1){
@@ -61,5 +74,8 @@ int main(int argc,char* argv[]){
 
     makeChoice(argc,argv);
     printParam();
+    My402ListInit(&Q1);
+    My402ListInit(&Q2);
+    My402ListInit(&bucket);
 	return 0;
 }
