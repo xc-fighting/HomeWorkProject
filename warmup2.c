@@ -12,7 +12,7 @@
  int P;
  int num;
  char* tsfile;
-
+ int test=0;
  My402List Q1;
  My402List Q2;
  My402List bucket;
@@ -23,7 +23,30 @@
  pthread_t server1_thread;
  pthread_t server2_thread;
 
-void printParam(){
+ void* serverFunction(){
+ 	pthread_mutex_lock(&lock);
+    test++;
+    printf("%d\n",test);
+ 	pthread_mutex_unlock(&lock);
+ 	return (void*)NULL;
+ }
+
+ void* packetFunction(){
+ 	pthread_mutex_lock(&lock);
+    test++;
+     printf("%d\n",test);
+ 	pthread_mutex_unlock(&lock);
+ 	return (void*)NULL;
+ }
+
+ void* bucketFunction(){
+ 	 pthread_mutex_lock(&lock);
+     test++;
+     printf("%d\n",test);
+ 	 pthread_mutex_unlock(&lock);
+ 	 return (void*)NULL;
+ }
+ void printParam(){
 	 printf("Emulation Parameters:\n");
 	 printf("number to arrive = %d\n",num);
 	 printf("lambda = %d\n",lambda);
@@ -33,8 +56,8 @@ void printParam(){
 	 printf("P = %d\n",P);
 	 printf("num = %d\n",num);
      printf("%s\n",tsfile);
-}
-void makeChoice(int argc,char* argv[]){
+ }
+ void makeChoice(int argc,char* argv[]){
      if(argc==1){
      	 fprintf(stderr,"command line param number misformed/n");
      }
@@ -77,5 +100,13 @@ int main(int argc,char* argv[]){
     My402ListInit(&Q1);
     My402ListInit(&Q2);
     My402ListInit(&bucket);
+    pthread_create(&packet_thread,0,serverFunction,(void*)NULL);
+    pthread_create(&token_thread,0,packetFunction,(void*)NULL);
+    pthread_create(&server1_thread,0,serverFunction,(void*)NULL);
+    pthread_create(&server2_thread,0,serverFunction,(void*)NULL);
+    pthread_join(packet_thread,0);
+    pthread_join(token_thread,0);
+    pthread_join(server1_thread,0);
+    pthread_join(server2_thread,0);
 	return 0;
 }
